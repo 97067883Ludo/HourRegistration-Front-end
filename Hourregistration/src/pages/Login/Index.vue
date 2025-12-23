@@ -1,20 +1,36 @@
 <script setup>
 import { useUserStore } from "@/state/UserState.js";
 import { ref } from "vue";
+import router from "@/router/index.js";
 
 const store = useUserStore();
 // Note: Usually you wouldn't login immediately on setup 
 // but rather inside a function called by the button click.
-
+store.Me();
 const loginButtonState = ref(false);
 const visible = ref(false); // Fixes the password toggle error
 const email = ref("");
 const password = ref("");
+const loginAttemptResult = ref({
+  AttemptDone: false,
+  success: false,
+  message: ""
+})
 
 const handleLogin = async () => {
   loginButtonState.value = true;
   try {
-    await store.Login(email.value, password.value);
+    let result = await store.Login(email.value, password.value);
+    if (!result.success) {
+      loginAttemptResult.value = {
+        AttemptDone: true,
+        success: false,
+        message: result.message
+      }
+    }
+    if (result && store.Token !== "") {
+      await router.push({ path: '/', replace: true })
+    }
   } finally {
     loginButtonState.value = false;
   }
@@ -34,6 +50,13 @@ const handleLogin = async () => {
           max-width="228"
           src="https://cdn.vuetifyjs.com/docs/images/logos/vuetify-logo-v3-slim-text-light.svg"
       ></v-img>
+      
+      <v-card
+          color="red"
+          class="px-6 py-4 mb-4"
+          v-if="loginAttemptResult.AttemptDone && !loginAttemptResult.success">
+        {{loginAttemptResult.message}}
+      </v-card>
       
       <div class="text-subtitle-1 text-medium-emphasis">Account</div>
 
