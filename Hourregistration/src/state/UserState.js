@@ -15,7 +15,7 @@ export const useUserStore = defineStore('UserStore', {
     },
     persist: {
         paths: ["UserName", 'FirstName', 'LastName', 'Email', 'Role', "Token"],
-        storage: sessionStorage, // Optional: Use sessionStorage instead of localStorage
+        storage: localStorage, // Optional: Use sessionStorage instead of localStorage
     },
     actions: {
         async Login(email, password) {
