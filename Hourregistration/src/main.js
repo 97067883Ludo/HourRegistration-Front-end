@@ -8,8 +8,8 @@ import { createPinia } from 'pinia'
 
 import { createApp } from 'vue'
 import App from './App.vue'
-import router from './router'
 import {createPersistedState} from "pinia-plugin-persistedstate";
+import router from "@/router/index.js";
 
 const pinia = createPinia()
 const app = createApp(App)
@@ -18,7 +18,6 @@ const vuetify = createVuetify({
   components,
   directives,
 })
-
 
 pinia.use(createPersistedState());
 app.use(router)

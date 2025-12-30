@@ -47,7 +47,6 @@ export const useUserStore = defineStore('UserStore', {
                 this.LastName = data.lastName;
                 this.Role = data.role;
                 
-
                 console.log("Login Successfull ");
                 console.log(data);
                 return {
@@ -56,28 +55,40 @@ export const useUserStore = defineStore('UserStore', {
                 }
             } catch (error) {
                 console.error("Login Error:", error);
+                if(router.currentRoute.value.path !== "/login") {
+                    await router.push("/login");
+                }
+                return {
+                    success: false,
+                    message: "Something went wrong"
+                }
             }
         },
 
-        Logout() {
+        async Logout() {
             this.$reset(); // Clears state
+            await router.push("/login");
         },
         
         async Me() {
-            const response = await fetch("http://localhost:5145/api/Auth/me", {
-                method: "PUT",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                    token: this.Token
-                })
-            });
-            if (response.status === 200 && router.currentRoute.value.path === '/login') {
-                await router.push({path: '/', replace: true})
-            }
-            if(response.status > 200) {
-                await router.push({path: '/login', replace: true})
+            try {
+                const response = await fetch("http://localhost:5145/api/Auth/me", {
+                    method: "PUT",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                        token: this.Token
+                    })
+                });
+                if (response.status === 200 && router.currentRoute.value.path === '/login') {
+                    await router.push({path: '/', replace: true})
+                }
+                if (response.status > 200) {
+                    await router.push({path: '/login', replace: true})
+                }
+            } catch (e) {
+                await router.push("/login");
             }
         }
     },
