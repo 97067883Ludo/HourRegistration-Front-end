@@ -28,7 +28,7 @@ const handleLogin = async () => {
         message: result.message
       }
     }
-    if (result && store.Token !== "") {
+    if (result.success && store.Token !== "") {
       await router.push({ path: '/', replace: true })
     }
   } finally {

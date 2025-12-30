@@ -7,7 +7,7 @@ const router = createRouter({
     {
       path: '/',
       name: 'home',
-      component: HomeView,
+      component: () => import('../pages/Home/Index.vue'),
     },
     {
       path: '/login',
@@ -17,6 +17,22 @@ const router = createRouter({
       // which is lazy-loaded when the route is visited.
       component: () => import('../pages/Login/Index.vue'),
     },
+    {
+      path: '/account',
+      name: 'Account',
+      // route level code-splitting
+      // this generates a separate chunk (About.[hash].js) for this route
+      // which is lazy-loaded when the route is visited.
+      component: () => import('../pages/account/Index.vue'),
+    },
+    {
+      path: '/projects',
+      name: 'Projects',
+      // route level code-splitting
+      // this generates a separate chunk (About.[hash].js) for this route
+      // which is lazy-loaded when the route is visited.
+      component: () => import('../pages/Projects/Index.vue'),
+    }
   ],
 })
 
