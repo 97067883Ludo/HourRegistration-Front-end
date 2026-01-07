@@ -1,11 +1,15 @@
 ﻿<script setup>
   
   import {useHourRegistrationStore} from "@/state/HourRegistrationState.js";
-  import { ref } from 'vue'
+  import {onMounted, ref} from 'vue'
 
   const EditDialog = ref(false)
   const DeleteDialog = ref(false)
   const savingInProgress = ref(false)
+  const showMenu = ref(false)
+  const startTime = ref(null)
+  const endTime = ref(null)
+  const showMenuEndTime = ref(false)
 
   const hourRegistration = useHourRegistrationStore();
 
@@ -40,12 +44,11 @@
   }
 
   function EditItem() {
-    hourRegistration.EditItem(props.registration)
-    EditDialog.value = true
+    hourRegistration.EditItem(props.index, startTime.value, endTime.value);
+    EditDialog.value = false
   }
   
   function CleanTime(time) {
-    
     let toBeReturned = "";
     let date = new Date(time)
     let now = new Date();
@@ -53,13 +56,22 @@
     if (date.getDate() === now.getDate()) {
       toBeReturned = "vandaag, "
     } else {
-      toBeReturned = date.toLocaleDateString()
+      toBeReturned = date.toLocaleDateString() + " "
     }
     
     toBeReturned += date.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})
     
     return toBeReturned;
   }
+  
+  onMounted(() => {
+    let StartTime = new Date(props.registration.StartTime)
+    let EndTime = new Date(props.registration.EndTime)
+    startTime.value = StartTime.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+    endTime.value = EndTime.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+    console.log(startTime.value)
+    console.log(endTime.value)
+  })
 </script>
 
 <template>
@@ -73,7 +85,6 @@
       </div>
     </v-card-text>
     <v-card-actions>
-      
       
       <v-dialog
           v-model="DeleteDialog"
@@ -121,6 +132,40 @@
             prepend-icon="mdi-pencil"
             title="Edit Item"
         >
+          <div style="padding-left: 10px; padding-right: 10px">
+            start time
+            <v-text-field
+                :model-value="startTime"
+                label="Picker in menu"
+                prepend-icon="mdi-clock-time-four-outline"
+                readonly
+            >
+              <v-menu
+                  v-model="showMenu"
+                  :close-on-content-click="false"
+                  activator="parent"
+                  min-width="0"
+              >
+                <v-time-picker format="24hr"  v-model="startTime"></v-time-picker>
+              </v-menu>
+            </v-text-field>
+            end time
+            <v-text-field
+                :model-value="endTime"
+                label="Picker in menu"
+                prepend-icon="mdi-clock-time-four-outline"
+                readonly
+            >
+              <v-menu
+                  v-model="showMenuEndTime"
+                  :close-on-content-click="false"
+                  activator="parent"
+                  min-width="0"
+              >
+                <v-time-picker format="24hr"  v-model="endTime"></v-time-picker>
+              </v-menu>
+            </v-text-field>
+          </div>
           <template v-slot:actions>
             
             <v-spacer></v-spacer>
@@ -129,7 +174,7 @@
               Anuleren
             </v-btn>
 
-            <v-btn @click="EditItem()">
+            <v-btn @click="EditItem">
               Opslaan
             </v-btn>
           </template>

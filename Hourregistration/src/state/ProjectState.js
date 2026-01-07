@@ -8,7 +8,7 @@ export const useProjectState =  defineStore('ProjectStore', {
     actions: {
         async GetAllProjects() {
             try {
-                const response = await fetch("http://localhost:5145/api/project", {
+                const response = await fetch("https://uren.huizenchaos.nl/api/project", {
                     method: "GET",
                     headers: {
                         "Content-Type": "application/json",
@@ -32,7 +32,7 @@ export const useProjectState =  defineStore('ProjectStore', {
         
         async CreateProject(name, description) {
             try {
-                const response = await fetch("http://localhost:5145/api/project", {
+                const response = await fetch("https://uren.huizenchaos.nl/api/project", {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json",
@@ -52,7 +52,7 @@ export const useProjectState =  defineStore('ProjectStore', {
         },
         async DeleteProject(id) {
             try {
-                const response = await fetch("http://localhost:5145/api/project/" + id, {
+                const response = await fetch("https://uren.huizenchaos.nl/api/project/" + id, {
                     method: "DELETE",
                     headers: {
                         "Content-Type": "application/json",

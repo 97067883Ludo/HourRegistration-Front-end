@@ -20,7 +20,7 @@ export const useUserStore = defineStore('UserStore', {
     actions: {
         async Login(email, password) {
             try {
-                const response = await fetch("http://localhost:5145/api/Auth/login", {
+                const response = await fetch("https://uren.huizenchaos.nl/api/Auth/login", {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json",
@@ -72,7 +72,7 @@ export const useUserStore = defineStore('UserStore', {
         
         async Me() {
             try {
-                const response = await fetch("http://localhost:5145/api/Auth/me", {
+                const response = await fetch("https://uren.huizenchaos.nl/api/Auth/me", {
                     method: "PUT",
                     headers: {
                         "Content-Type": "application/json",

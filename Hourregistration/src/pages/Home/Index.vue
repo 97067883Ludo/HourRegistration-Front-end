@@ -42,9 +42,6 @@ onMounted(() => {
   hourRegistrationStore.UserId = userStore.Id
   running.value = hourRegistrationStore.Running
   let project = hourRegistrationStore.getActiveProject();
-  if (project === undefined) {
-    console.log("sdf")
-  }
   if (project != undefined || project != null) {
     selectedProject.value = project.name ?? ""
     let startTime = new Date( hourRegistrationStore.StartTime);

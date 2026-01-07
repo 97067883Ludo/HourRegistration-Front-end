@@ -17,7 +17,7 @@ export const useHourRegistrationStore = defineStore('HourRegistrationStore', {
     actions: {
         async CreateHourRegistration(itemIndex) {
             try {
-                const response = await fetch("http://localhost:5145/api/hour", {
+                const response = await fetch("https://uren.huizenchaos.nl/api/hour", {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json",
@@ -69,9 +69,18 @@ export const useHourRegistrationStore = defineStore('HourRegistrationStore', {
         DeleteItem(indexItem) {
             this.RecordedItems.splice(indexItem, 1);
         },
-        EditItem(index, item) {
+        EditItem(index, startTime, endTime) {
+            let StartTime = new Date(this.RecordedItems[index].StartTime);
+            let EndTime = new Date(this.RecordedItems[index].EndTime);
             
-            this.EditItem = item
+            StartTime.setHours(startTime.split(":")[0])
+            StartTime.setMinutes(startTime.split(":")[1])
+            
+            EndTime.setHours(endTime.split(":")[0])
+            EndTime.setMinutes(endTime.split(":")[1])
+            
+            this.RecordedItems[index].StartTime = StartTime
+            this.RecordedItems[index].EndTime = EndTime
         },
     }
 })
