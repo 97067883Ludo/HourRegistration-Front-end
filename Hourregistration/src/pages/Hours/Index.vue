@@ -19,16 +19,19 @@ import {useUserStore} from "@/state/UserState.js";
     },
   ];
   const registrations = ref([]);
+  const loadingData = ref(false)
   
   const hourStore = useHourRegistrationStore();
   const userStore = useUserStore();
   
   onMounted(async () => {
+    loadingData.value = true;
     let result = await hourStore.GetHourRegistrationDetails(); 
     result.data.then((data) => {
       console.log(data);
       registrations.value = data;
     });
+    loadingData.value = false;
   })
 
 // Helper function to pad a single number with a leading zero
@@ -96,39 +99,51 @@ function pad(number) {
         ></v-autocomplete>
       </div>
       
-      <v-table>
-        <thead>
-        <tr>
-          <th class="text-left">
-            Gebruiker
-          </th>
-          <th class="text-left">
-            Project
-          </th>
-          <th class="text-left">
-            Start tijd
-          </th>
-          <th class="text-left">
-            Eind tijd
-          </th>
-          <th class="text-left">
-            subtotaal
-          </th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr
-            v-for="item in registrations"
-            :key="item.id"
-        >
-          <td>{{ item.user.firstName + " " + item.user.lastName }}</td>
-          <td>{{ item.project.name }}</td>
-          <td>{{ getCleanDateTimeString(item.startTime) }}</td>
-          <td>{{ getCleanDateTimeString(item.endTime) }}</td>
-          <td>{{ getSubTotal(item.startTime, item.endTime) }}</td>
-        </tr>
-        </tbody>
-      </v-table>
+      <v-data-table
+          :items="registrations"  
+          :headers="[
+            { title: 'Gebruiker', key: 'user.firstName' + ' ' + 'user.lastName' },
+            { title: 'Project', key: 'project.name' },
+            { title: 'Start tijd', key: 'startTime' },
+            { title: 'Eind tijd', key: 'endTime' },
+            { title: 'subtotaal', key: 'subTotal' },
+          ]"
+          :loading="loadingData"
+      >
+<!--        <thead>-->
+<!--        <tr>-->
+<!--          <th class="text-left">-->
+<!--            Gebruiker-->
+<!--          </th>-->
+<!--          <th class="text-left">-->
+<!--            Project-->
+<!--          </th>-->
+<!--          <th class="text-left">-->
+<!--            Start tijd-->
+<!--          </th>-->
+<!--          <th class="text-left">-->
+<!--            Eind tijd-->
+<!--          </th>-->
+<!--          <th class="text-left">-->
+<!--            subtotaal-->
+<!--          </th>-->
+<!--        </tr>-->
+<!--        </thead>-->
+<!--        <tbody>-->
+<!--        <tr-->
+<!--            v-for="item in registrations"-->
+<!--            :key="item.id"-->
+<!--        >-->
+<!--          <td>{{ item.user.firstName + " " + item.user.lastName }}</td>-->
+<!--          <td>{{ item.project.name }}</td>-->
+<!--          <td>{{ getCleanDateTimeString(item.startTime) }}</td>-->
+<!--          <td>{{ getCleanDateTimeString(item.endTime) }}</td>-->
+<!--          <td>{{ getSubTotal(item.startTime, item.endTime) }}</td>-->
+<!--        </tr>-->
+<!--        </tbody>-->
+<!--        -->
+        
+      </v-data-table>
       
     </div>
   </div>

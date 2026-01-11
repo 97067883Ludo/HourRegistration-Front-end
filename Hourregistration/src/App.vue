@@ -62,14 +62,14 @@ const rail = ref(true)
           </RouterLink>
           <RouterLink to="/projects" style="text-decoration: none; color: inherit;">
             <v-list-item
-                prepend-icon="mdi-account-group-outline"
+                prepend-icon="mdi-briefcase-outline"
                 title="Projects"
                 value="Projects"
             ></v-list-item>
           </RouterLink>
           <RouterLink to="/hours" style="text-decoration: none; color: inherit;">
             <v-list-item
-                prepend-icon="mdi-account-group-outline"
+                prepend-icon="mdi-clock-outline"
                 title="Hours"
                 value="hours"
             ></v-list-item>
