@@ -31,11 +31,52 @@ import {useUserStore} from "@/state/UserState.js";
     });
   })
 
+// Helper function to pad a single number with a leading zero
+function pad(number) {
+  // String(number) converts the number to a string
+  // .padStart(2, '0') ensures the string is at least 2 characters long,
+  // padding with '0' at the start if it's not.
+  return String(number).padStart(2, '0');
+}
+
   function getCleanDateTimeString(dateString) {
     let date = new Date(dateString);
-    let toBeReturned = date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + (date.getDate() + 1)
-        + " " + date.getHours() + ":" + date.getMinutes();
+  
+    // --- IMPORTANT CORRECTION FOR DATE PARTS ---
+    // Month: getMonth() is 0-indexed (Jan=0), so you must add 1.
+    // Date: getDate() returns the day of the month. Adding 1 is usually incorrect 
+    // unless you have a specific requirement to advance the day. 
+    // I have removed the + 1 from getDate() as it is likely a bug.
+  
+    let year = date.getFullYear();
+    let month = date.getMonth() + 1; // 0-indexed, so add 1
+    let day = date.getDate();       // Returns the day of the month (1-31)
+    let hours = date.getHours();
+    let minutes = date.getMinutes();
+  
+    let toBeReturned = year
+        + "-" + pad(month)
+        + "-" + pad(day)
+        + " " + pad(hours)
+        + ":" + pad(minutes);
+  
     return toBeReturned;
+  }
+
+  function getSubTotal(startTimeString, endTimeString) {
+    let startTime = new Date(startTimeString);
+    let endTime = new Date(endTimeString);
+    let diff = endTime - startTime;
+  
+    // Calculate hours and minutes from the difference in milliseconds
+    let hours = Math.floor(diff / (1000 * 60 * 60));
+    let minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+  
+    // --- FIX APPLIED HERE ---
+    // Convert minutes to a string and pad with a leading zero if < 10
+    let paddedMinutes = String(minutes).padStart(2, '0');
+  
+    return hours + ":" + paddedMinutes;
   }
 </script>
 
@@ -71,7 +112,7 @@ import {useUserStore} from "@/state/UserState.js";
             Eind tijd
           </th>
           <th class="text-left">
-
+            subtotaal
           </th>
         </tr>
         </thead>
@@ -84,6 +125,7 @@ import {useUserStore} from "@/state/UserState.js";
           <td>{{ item.project.name }}</td>
           <td>{{ getCleanDateTimeString(item.startTime) }}</td>
           <td>{{ getCleanDateTimeString(item.endTime) }}</td>
+          <td>{{ getSubTotal(item.startTime, item.endTime) }}</td>
         </tr>
         </tbody>
       </v-table>
