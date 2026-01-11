@@ -1,4 +1,5 @@
 ﻿import {defineStore} from "pinia";
+import {fetchWithBaseUrl} from "@/state/Fetch.js";
 
 export const useHourRegistrationStore = defineStore('HourRegistrationStore', {
     state: () => ({
@@ -17,7 +18,7 @@ export const useHourRegistrationStore = defineStore('HourRegistrationStore', {
     actions: {
         async CreateHourRegistration(itemIndex) {
             try {
-                const response = await fetch("https://uren.huizenchaos.nl/api/hour", {
+                const response = await fetchWithBaseUrl("api/hour", {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json",
@@ -82,5 +83,23 @@ export const useHourRegistrationStore = defineStore('HourRegistrationStore', {
             this.RecordedItems[index].StartTime = StartTime
             this.RecordedItems[index].EndTime = EndTime
         },
+        async GetHourRegistrationDetails(userId) {
+            try {
+                const response = await fetchWithBaseUrl("api/hour/user/", {
+                    method: "GET",
+                })
+                
+                return {
+                    response: response,
+                    data: response.json(),
+                    status: response.status
+                }
+            } catch (e) {
+                return {
+                    response: e.message,
+                    status: 500
+                }
+            }
+        }
     }
 })

@@ -1,6 +1,8 @@
 ﻿<script setup>
 import {useProjectState} from "@/state/ProjectState.js";
 import {ref} from "vue";
+import router from "@/router/index.js";
+
 const projectState = useProjectState();
 
 const loading = ref(true);
@@ -59,6 +61,10 @@ async function CreateProject() {
   creatingProject.value = false;
 }
 
+function clickedRow(projectId) {
+  router.push("/projects/" + projectId);
+}
+
 </script>
 
 <template>
@@ -111,8 +117,10 @@ async function CreateProject() {
         </thead>
         <tbody>
         <tr
+            style="cursor: pointer"
             v-for="item in data"
             :key="item.name"
+            @click="clickedRow(item.id)"
         >
           <td>{{ item.name }}</td>
           <td>{{ item.description }}</td>

@@ -67,6 +67,13 @@ const rail = ref(true)
                 value="Projects"
             ></v-list-item>
           </RouterLink>
+          <RouterLink to="/hours" style="text-decoration: none; color: inherit;">
+            <v-list-item
+                prepend-icon="mdi-account-group-outline"
+                title="Hours"
+                value="hours"
+            ></v-list-item>
+          </RouterLink>
           <v-spacer></v-spacer>
             <v-list-item
                 prepend-icon="mdi-account-group-outline"

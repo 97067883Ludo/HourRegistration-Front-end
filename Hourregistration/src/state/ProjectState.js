@@ -1,4 +1,5 @@
 ﻿import {defineStore} from "pinia";
+import {fetchWithBaseUrl} from "@/state/Fetch.js";
 
 
 export const useProjectState =  defineStore('ProjectStore', {
@@ -6,9 +7,33 @@ export const useProjectState =  defineStore('ProjectStore', {
         
     }),
     actions: {
+        async GetProject(id) {
+            try {
+                const response = await fetchWithBaseUrl("api/project/" + id, {
+                    method: "GET",
+                    headers: {
+                        "Content-Type": "application/json",
+                    }
+                });
+                console.log(response)
+                return {
+                    success: true,
+                    data: await response.json(),
+                    status: response.status
+                }
+
+            } catch (error) {
+                return {
+                    success: false,
+                    data: [],
+                    code: error.code
+                }
+            }
+        },
+        
         async GetAllProjects() {
             try {
-                const response = await fetch("https://uren.huizenchaos.nl/api/project", {
+                const response = await fetchWithBaseUrl("api/project", {
                     method: "GET",
                     headers: {
                         "Content-Type": "application/json",
@@ -32,7 +57,7 @@ export const useProjectState =  defineStore('ProjectStore', {
         
         async CreateProject(name, description) {
             try {
-                const response = await fetch("https://uren.huizenchaos.nl/api/project", {
+                const response = await fetchWithBaseUrl("api/project", {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json",
@@ -52,7 +77,7 @@ export const useProjectState =  defineStore('ProjectStore', {
         },
         async DeleteProject(id) {
             try {
-                const response = await fetch("https://uren.huizenchaos.nl/api/project/" + id, {
+                const response = await fetchWithBaseUrl("api/project/" + id, {
                     method: "DELETE",
                     headers: {
                         "Content-Type": "application/json",

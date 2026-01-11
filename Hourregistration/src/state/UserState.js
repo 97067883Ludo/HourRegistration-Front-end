@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia';
 import router from "@/router/index.js";
+import {fetchWithBaseUrl} from "@/state/Fetch.js";
 
 export const useUserStore = defineStore('UserStore', {
     state: () => {
@@ -20,7 +21,7 @@ export const useUserStore = defineStore('UserStore', {
     actions: {
         async Login(email, password) {
             try {
-                const response = await fetch("https://uren.huizenchaos.nl/api/Auth/login", {
+                const response = await fetchWithBaseUrl("api/Auth/login", {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json",
@@ -72,7 +73,7 @@ export const useUserStore = defineStore('UserStore', {
         
         async Me() {
             try {
-                const response = await fetch("https://uren.huizenchaos.nl/api/Auth/me", {
+                const response = await fetchWithBaseUrl("api/Auth/me", {
                     method: "PUT",
                     headers: {
                         "Content-Type": "application/json",
