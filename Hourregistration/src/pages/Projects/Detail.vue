@@ -24,7 +24,6 @@
   onMounted(async () => {
     await loadProject();
     console.log(project.value);
-
   })
 
   function getISOWeekNumber(dateString) {

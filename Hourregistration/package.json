@@ -1,5 +1,7 @@
 {
   "name": "hourregistration",
+  "description": "test",
+  "author": "test",
   "version": "0.0.0",
   "private": true,
   "type": "module",
@@ -15,13 +17,13 @@
     "app": "electron-builder --dir"
   },
   "dependencies": {
-    "electron-builder": "^26.0.12",
     "pinia": "^3.0.4",
     "vue": "^3.5.25",
     "vue-router": "^4.6.3",
     "vuetify": "^3.11.4"
   },
   "devDependencies": {
+    "electron-builder": "^26.0.12",
     "@vitejs/plugin-vue": "^6.0.2",
     "electron": "^39.2.7",
     "vite": "^7.2.4",

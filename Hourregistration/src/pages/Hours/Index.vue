@@ -4,20 +4,17 @@ import {onMounted, ref} from "vue";
   import {useHourRegistrationStore} from "@/state/HourRegistrationState.js";
 import {useUserStore} from "@/state/UserState.js";
 
-  const test = [
-    {
-      align: 'start',
-      key: 'User',
-      sortable: false,
-      title: 'Gebruiker',
-    },
-    {
-      align: 'start',
-      key: 'name',
-      sortable: false,
-      title: 'Dessert (100g serving)',
-    },
-  ];
+  const headers = [
+    { key: 'data-table-group', title: 'week' },
+    { title: 'Gebruiker', key: 'user.username' },
+    { title: 'Project', key: 'project.name' },
+    { title: 'Start tijd', key: 'startTime' },
+    { title: 'Eind tijd', key: 'endTime' },
+    { title: 'subtotaal', key: 'subTotal' },
+  ]
+
+  const groupBy = ref([{ key: 'weekno', order: 'asc' }, { key: 'status', order: 'asc' }])
+
   const registrations = ref([]);
   const loadingData = ref(false)
   
@@ -28,7 +25,10 @@ import {useUserStore} from "@/state/UserState.js";
     loadingData.value = true;
     let result = await hourStore.GetHourRegistrationDetails(); 
     result.data.then((data) => {
+      for(let i =0; i<data.length; i++)
+        data[i].weekno = getISOWeekNumber(data[i].startTime);
       console.log(data);
+      
       registrations.value = data;
     });
     loadingData.value = false;
@@ -44,12 +44,6 @@ function pad(number) {
 
   function getCleanDateTimeString(dateString) {
     let date = new Date(dateString);
-  
-    // --- IMPORTANT CORRECTION FOR DATE PARTS ---
-    // Month: getMonth() is 0-indexed (Jan=0), so you must add 1.
-    // Date: getDate() returns the day of the month. Adding 1 is usually incorrect 
-    // unless you have a specific requirement to advance the day. 
-    // I have removed the + 1 from getDate() as it is likely a bug.
   
     let year = date.getFullYear();
     let month = date.getMonth() + 1; // 0-indexed, so add 1
@@ -81,6 +75,27 @@ function pad(number) {
   
     return hours + ":" + paddedMinutes;
   }
+
+function getISOWeekNumber(dateString) {
+  let date = new Date(dateString);
+  const d = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
+  d.setUTCDate(d.getUTCDate() + 4 - (d.getUTCDay() || 7));
+  const yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
+  const weekNo = Math.ceil((((d - yearStart) / 86400000) + 1) / 7);
+
+  return weekNo;
+}
+
+function caclualteTotalTime(items) {
+  let totalTime = 0;
+  
+  for (let i =0; i < items.length; i++) {
+    totalTime += (new Date(items[i].columns.endTime) - new Date(items[i].columns.startTime));
+  }
+  const hours = totalTime / (1000 * 60 * 60);
+  return hours.toFixed(2);
+}
+
 </script>
 
 <template>
@@ -101,34 +116,49 @@ function pad(number) {
       
       <v-data-table
           :items="registrations"  
-          :headers="[
-            { title: 'Gebruiker', key: 'user.firstName' + ' ' + 'user.lastName' },
-            { title: 'Project', key: 'project.name' },
-            { title: 'Start tijd', key: 'startTime' },
-            { title: 'Eind tijd', key: 'endTime' },
-            { title: 'subtotaal', key: 'subTotal' },
-          ]"
           :loading="loadingData"
+          :group-by="groupBy"
+          :headers="headers"
       >
-<!--        <thead>-->
-<!--        <tr>-->
-<!--          <th class="text-left">-->
-<!--            Gebruiker-->
-<!--          </th>-->
-<!--          <th class="text-left">-->
-<!--            Project-->
-<!--          </th>-->
-<!--          <th class="text-left">-->
-<!--            Start tijd-->
-<!--          </th>-->
-<!--          <th class="text-left">-->
-<!--            Eind tijd-->
-<!--          </th>-->
-<!--          <th class="text-left">-->
-<!--            subtotaal-->
-<!--          </th>-->
-<!--        </tr>-->
-<!--        </thead>-->
+        <!-- i dont know why this is required but if i dont this shity thing is going broken... -->
+        <template v-slot:group-header="{ item, columns, toggleGroup, isGroupOpen }">
+          <tr>
+            <td
+                :colspan="columns.length"
+                class="cursor-pointer"
+                v-ripple
+                @click="toggleGroup(item)"
+            >
+              <div class="d-flex align-center" style="justify-content: space-between">
+                <div>
+                <v-btn
+                    :icon="isGroupOpen(item) ? '$expand' : '$next'"
+                    color="medium-emphasis"
+                    density="comfortable"
+                    size="small"
+                    variant="outlined"
+                ></v-btn>
+
+                <span class="ms-4">{{ item.value }}</span>
+                </div>
+                  <span>Totaal: {{caclualteTotalTime(item.items[0].items)}}</span>
+              </div>
+            </td>
+          </tr>
+        </template>
+          
+        <template v-slot:item.endTime="{ internalItem, isExpanded, toggleExpand }">
+          {{ getCleanDateTimeString(internalItem.columns.endTime) }}
+        </template>
+
+        <template v-slot:item.startTime="{ internalItem, isExpanded, toggleExpand }">
+          {{ getCleanDateTimeString(internalItem.columns.startTime) }}
+        </template>
+
+        <template v-slot:item.subTotal="{ internalItem, isExpanded, toggleExpand }">
+          {{ getSubTotal(internalItem.columns.startTime, internalItem.columns.endTime) }}
+        </template>
+
 <!--        <tbody>-->
 <!--        <tr-->
 <!--            v-for="item in registrations"-->
