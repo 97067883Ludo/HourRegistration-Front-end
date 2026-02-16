@@ -91,6 +91,27 @@ export const useUserStore = defineStore('UserStore', {
             } catch (e) {
                 await router.push("/login");
             }
+        },
+        async GetUserNames() {
+            try {
+                const response = await fetchWithBaseUrl("api/users/usernames", {
+                    method: "GET",
+                    headers: {
+                        "Content-Type": "application/json",
+                    }
+                });
+                return {
+                    success: true,
+                    data: await response.json(),
+                    code: response.status
+                }
+            } catch (e) {
+                return {
+                    success: false,
+                    data: [],
+                    code: e.status
+                }
+            }
         }
     },
 })

@@ -21,17 +21,12 @@ import {useUserStore} from "@/state/UserState.js";
   const hourStore = useHourRegistrationStore();
   const userStore = useUserStore();
   
+  const users = ref([]);
+  const loadingUsers = ref(false);
+  
   onMounted(async () => {
-    loadingData.value = true;
-    let result = await hourStore.GetHourRegistrationDetails(); 
-    result.data.then((data) => {
-      for(let i =0; i<data.length; i++)
-        data[i].weekno = getISOWeekNumber(data[i].startTime);
-      console.log(data);
-      
-      registrations.value = data;
-    });
-    loadingData.value = false;
+    await LoadHourData();
+    await LoadUsers();
   })
 
 // Helper function to pad a single number with a leading zero
@@ -40,6 +35,26 @@ function pad(number) {
   // .padStart(2, '0') ensures the string is at least 2 characters long,
   // padding with '0' at the start if it's not.
   return String(number).padStart(2, '0');
+}
+
+async function LoadUsers() {
+  loadingUsers.value = true;
+  let response = await userStore.GetUserNames();
+  users.value = response.data;
+  loadingUsers.value = false;
+}
+
+async function LoadHourData () {
+  loadingData.value = true;
+  let result = await hourStore.GetHourRegistrationDetails();
+  result.data.then((data) => {
+    for(let i =0; i<data.length; i++)
+      data[i].weekno = getISOWeekNumber(data[i].startTime);
+    console.log(data);
+
+    registrations.value = data;
+  });
+  loadingData.value = false;
 }
 
   function getCleanDateTimeString(dateString) {
@@ -103,9 +118,11 @@ function caclualteTotalTime(items) {
     <div style="width: 80%;">
       <div style="width: 100%; display: flex;">
         <v-autocomplete
+            :loading="loadingUsers"
             style="margin:10px"
             label="Gebruiker"
-            :items="['California', 'Colorado', 'Florida', 'Georgia', 'Texas', 'Wyoming']"
+            :items="users"
+            
         ></v-autocomplete>
         <v-autocomplete
             style="margin:10px"
