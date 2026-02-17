@@ -47,7 +47,6 @@ function Record() {
     StartTime.value = date.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
   } else {
     EndTime.value = date.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
-    SaveRecording();
   }
 
   Running.value = !Running.value;
