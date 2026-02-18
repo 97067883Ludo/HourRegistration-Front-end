@@ -100,6 +100,9 @@ export const useHourRegistrationStore = defineStore('HourRegistrationStore', {
                     status: 500
                 }
             }
-        }
+        },
+        SaveRecording(ProjectName, ProjectId, UserId, StartTime, EndTime) {
+            this.RecordedItems.push({ProjectName, ProjectId, UserId, StartTime, EndTime})
+        },
     }
 })

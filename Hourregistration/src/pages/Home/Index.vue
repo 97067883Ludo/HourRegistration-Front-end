@@ -1,6 +1,11 @@
 ﻿<script setup>
 import HourRegistrationCard from "@/pages/Home/Components/HourRegistrationCard.vue";
 import HourRecorder from "@/pages/Home/Components/HourRecorder.vue";
+import {useHourRegistrationStore} from "@/state/HourRegistrationState.js";
+import {storeToRefs} from "pinia";
+
+const HourRegistrationStore = useHourRegistrationStore();
+const {RecordedItems} = storeToRefs(HourRegistrationStore);
 
 </script>
 

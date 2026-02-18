@@ -15,7 +15,6 @@
 
   import { defineProps } from 'vue';
   const props = defineProps({
-    
     registration: {
       type: Object,
       default: 0,

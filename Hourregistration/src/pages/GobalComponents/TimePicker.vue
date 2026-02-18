@@ -2,29 +2,35 @@
 
 import {onMounted, ref, watch} from "vue";
 
-  const Time = ref(null);
+  const Time = ref("");
   const startTimeShowMenu = ref(false);
 
   const emit = defineEmits(["update-time"]);
-  const {Disabled, Label, Format = "24hr", Value} = defineProps({
+  const { Disabled, Label, Format = "24hr", Value } = defineProps({
     Disabled: Boolean,
     Label: String,
     Format: String,
+    Value: String
   });
   
   onMounted(() => {
     Time.value = Value;
   })
-  
+
+  watch(() => Value, (value) => {
+    Time.value = value;
+  })
+
   watch(Time, (time) => {
     console.log(time)
+    console.log(typeof time)
     emit('update-time', time);
   })
 
 function clearTime() {
     Time.value = "";
 }
-  
+
 </script>
 
 <template>
@@ -32,7 +38,6 @@ function clearTime() {
       :model-value="Time"
       :label="Label"
       prepend-icon="mdi-clock-time-four-outline"
-      :format="Format"
       :disabled="Disabled"
       clearable
       @click:clear="clearTime"
