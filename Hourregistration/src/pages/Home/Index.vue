@@ -7,6 +7,8 @@ import {storeToRefs} from "pinia";
 const HourRegistrationStore = useHourRegistrationStore();
 const {RecordedItems} = storeToRefs(HourRegistrationStore);
 
+console.log(RecordedItems);
+
 </script>
 
 <template>

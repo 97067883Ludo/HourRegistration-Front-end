@@ -5,13 +5,16 @@ import {useProjectState} from "@/state/ProjectState.js";
 import TimePicker from "@/pages/GobalComponents/TimePicker.vue";
 import {useHourRecorderState} from "@/state/HourRecorderState.js";
 import {useHourRegistrationStore} from "@/state/HourRegistrationState.js";
+import {useUserStore} from "@/state/UserState.js";
 
 const projects = ref([]);
 const LoadingProjects = ref(false)
 const HourRegistrationStore = useHourRegistrationStore();
 const projectStore = useProjectState();
 const HourRecorderStore = useHourRecorderState();
-const {StartTime, EndTime, Running, ProjectId, ProjectName, UserId} = storeToRefs(HourRecorderStore);
+const UserStore = useUserStore();
+const {Id} = storeToRefs(UserStore);
+const {StartTime, EndTime, Running, ProjectId, ProjectName} = storeToRefs(HourRecorderStore);
 const StartAndEndTimeAreFilled = computed(() => StartTime.value === "" && EndTime.value === "");
 
 onMounted(async () => {
@@ -46,7 +49,7 @@ function SaveEndTime(time) {
 }
 
 function SaveRecording() {
-  HourRegistrationStore.SaveRecording(ProjectName, ProjectId, UserId, StartTime, EndTime);
+  HourRegistrationStore.SaveRecording(ProjectName.value, ProjectId.value, Id.value, StartTime.value, EndTime.value);
 }
 
 function clearFields() {

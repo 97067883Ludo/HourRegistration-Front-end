@@ -107,8 +107,9 @@ function caclualteTotalTime(items) {
   for (let i =0; i < items.length; i++) {
     totalTime += (new Date(items[i].columns.endTime) - new Date(items[i].columns.startTime));
   }
-  const hours = totalTime / (1000 * 60 * 60);
-  return hours.toFixed(2);
+  const hours = Math.floor(totalTime / (1000 * 60 * 60));
+  let minutes = Math.floor((totalTime % (1000 * 60 * 60)) / (1000 * 60));
+  return hours + ":" + minutes;
 }
 
 </script>

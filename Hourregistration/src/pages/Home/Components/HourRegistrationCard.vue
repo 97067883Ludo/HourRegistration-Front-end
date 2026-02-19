@@ -14,6 +14,7 @@
   const hourRegistration = useHourRegistrationStore();
 
   import { defineProps } from 'vue';
+  import TimePicker from "@/pages/GobalComponents/TimePicker.vue";
   const props = defineProps({
     registration: {
       type: Object,
@@ -64,12 +65,11 @@
   }
   
   onMounted(() => {
+    console.log(props.registration)
     let StartTime = new Date(props.registration.StartTime)
     let EndTime = new Date(props.registration.EndTime)
     startTime.value = StartTime.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
     endTime.value = EndTime.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
-    console.log(startTime.value)
-    console.log(endTime.value)
   })
 </script>
 
@@ -77,7 +77,7 @@
   <v-card :title="hourRegistration.getProjectNameById(props.registration.ProjectId)" style="margin: 1%">
     <v-card-text>
       <div>
-        {{CleanTime(props.registration.StartTime)}}
+        {{CleanTime(props.registration.StartTime)}} tot
       </div>
       <div>
         {{CleanTime(props.registration.EndTime)}}
@@ -87,7 +87,7 @@
       
       <v-dialog
           v-model="DeleteDialog"
-          max-width="400"
+          max-width="350"
           persistent
       >
         <template v-slot:activator="{ props: activatorProps }">
@@ -108,14 +108,14 @@
               Anuleren
             </v-btn>
 
-            <v-btn @click="DeleteItem(props.index)">
+            <v-btn @click="() => {DeleteItem(props.index); DeleteDialog = false}">
               Verwijderen
             </v-btn>
           </template>
         </v-card>
       </v-dialog>
       
-      <v-btn @click="SaveItem()" :loading="savingInProgress">opslaan</v-btn>
+      <v-btn @click="SaveItem()" :loading="savingInProgress">Opslaan</v-btn>
       <v-dialog
           v-model="EditDialog"
           max-width="400"
@@ -132,38 +132,12 @@
             title="Edit Item"
         >
           <div style="padding-left: 10px; padding-right: 10px">
-            start time
-            <v-text-field
-                :model-value="startTime"
-                label="Picker in menu"
-                prepend-icon="mdi-clock-time-four-outline"
-                readonly
-            >
-              <v-menu
-                  v-model="showMenu"
-                  :close-on-content-click="false"
-                  activator="parent"
-                  min-width="0"
-              >
-                <v-time-picker format="24hr"  v-model="startTime"></v-time-picker>
-              </v-menu>
-            </v-text-field>
-            end time
-            <v-text-field
-                :model-value="endTime"
-                label="Picker in menu"
-                prepend-icon="mdi-clock-time-four-outline"
-                readonly
-            >
-              <v-menu
-                  v-model="showMenuEndTime"
-                  :close-on-content-click="false"
-                  activator="parent"
-                  min-width="0"
-              >
-                <v-time-picker format="24hr"  v-model="endTime"></v-time-picker>
-              </v-menu>
-            </v-text-field>
+            <h4>start tijd</h4>
+            <TimePicker @update-time="args => startTime = args" :Value="startTime"></TimePicker>
+            
+            <h4>eind tijd</h4>
+            <TimePicker @update-time="args => endTime = args" :Value="endTime"></TimePicker>
+
           </div>
           <template v-slot:actions>
             
