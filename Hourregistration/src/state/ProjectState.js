@@ -15,7 +15,6 @@ export const useProjectState =  defineStore('ProjectStore', {
                         "Content-Type": "application/json",
                     }
                 });
-                console.log(response)
                 return {
                     success: true,
                     data: await response.json(),
@@ -39,7 +38,6 @@ export const useProjectState =  defineStore('ProjectStore', {
                         "Content-Type": "application/json",
                     }
                 });
-                console.log(response)
                 return {
                     success: true,
                     data: await response.json(),
@@ -71,20 +69,30 @@ export const useProjectState =  defineStore('ProjectStore', {
             } catch (error) {
                 return {
                     success: false,
-                    
                 }
             }
         },
         async DeleteProject(id) {
             try {
-                const response = await fetchWithBaseUrl("api/project/" + id, {
+                return await fetchWithBaseUrl("api/project/" + id, {
                     method: "DELETE",
                     headers: {
                         "Content-Type": "application/json",
                     }
+                }).then((response) => {
+                    return {
+                        success: true,
+                        data:  response.json(),
+                        status: response.status
+                    }
                 });
-                return {}
-            } catch (error) {}
+            } catch (error) {
+                return {
+                    success: false,
+                    data: [],
+                    code: error.code
+                }
+            }
         }
     }
     

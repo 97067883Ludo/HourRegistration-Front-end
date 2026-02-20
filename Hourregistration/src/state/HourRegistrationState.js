@@ -26,8 +26,8 @@ export const useHourRegistrationStore = defineStore('HourRegistrationStore', {
                     body: JSON.stringify({
                         ProjectId: this.RecordedItems[itemIndex].ProjectId,
                         UserId: this.RecordedItems[itemIndex].UserId,
-                        StartTime: this.RecordedItems[itemIndex].StartTime,
-                        EndTime: this.RecordedItems[itemIndex].EndTime
+                        StartTime: new Date(this.RecordedItems[itemIndex].StartTime).toISOString(),
+                        EndTime: new Date(this.RecordedItems[itemIndex].EndTime).toISOString()
                     })
                 })
                 return {

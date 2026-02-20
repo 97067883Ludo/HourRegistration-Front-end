@@ -1,6 +1,6 @@
 ﻿<script setup>
 import {useProjectState} from "@/state/ProjectState.js";
-import {ref} from "vue";
+import {onMounted, ref} from "vue";
 import router from "@/router/index.js";
 
 const projectState = useProjectState();
@@ -10,6 +10,7 @@ const data = ref([]);
 const createButton = ref(null)
 const creatingProject = ref(false)
 const projectName = ref("")
+const projectDescription = ref("");
 
 const rules = [
   value => !!value || 'Required.',
@@ -18,10 +19,6 @@ const rules = [
 
 const showMenu = ref(false)
 const menuTarget = ref(null)
-
-const menuItems = [
-  { title: 'Remove', prependIcon: 'mdi-trash-can', code: 'delete' },
-]
 
 async function show (evt) {
   if (showMenu.value) {
@@ -32,7 +29,6 @@ async function show (evt) {
   showMenu.value = true
 }
 
-projectState.GetAllProjects();
 async function LoadProjects() {
     const result = await projectState.GetAllProjects();
     if (result.success) {
@@ -43,27 +39,32 @@ async function LoadProjects() {
 
 async function DeleteProject(id) {
   const result = await projectState.DeleteProject(id);
-  if (result.success) {
-    loading.value = false;
-    data.value = result.data;
+  if(result.success) {
+    await LoadProjects();
   }
+  
 }
-
-LoadProjects();
 
 async function CreateProject() {
   creatingProject.value = true;
-  const result = await projectState.CreateProject(projectName.value, projectName.value);
+  const result = await projectState.CreateProject(projectName.value, projectDescription.value);
+  console.log(result)
   if (!result.success) {
     creatingProject.value = false;
+    await LoadProjects();
     return;
   }
   creatingProject.value = false;
+  await LoadProjects();
 }
 
 function clickedRow(projectId) {
   router.push("/projects/" + projectId);
 }
+
+onMounted(async () => {
+  await LoadProjects();
+})
 
 </script>
 
@@ -85,11 +86,17 @@ function clickedRow(projectId) {
                   label="Project Naam"
                   v-model="projectName"
               ></v-text-field>
+              <v-text-field
+                  :rules="rules"
+                  hide-details="auto"
+                  label="Project beschrijving"
+                  v-model="projectDescription"
+              ></v-text-field>
               <template v-slot:actions>
                 <v-btn
                     :loading="creatingProject"
                     text="Create"
-                    @click="() => {let result = CreateProject(); isActive.value = false}"
+                    @click="async () => {await CreateProject(); isActive.value = false}"
                 ></v-btn>
                 <v-btn
                     text="Close"
@@ -125,7 +132,7 @@ function clickedRow(projectId) {
           <td>{{ item.name }}</td>
           <td>{{ item.description }}</td>
           <td>
-            <v-btn @click="DeleteProject(item.id)">Delete</v-btn>
+            <v-btn @click=" (event) => {DeleteProject(item.id); event.stopPropagation();}">Delete</v-btn>
           </td>
         </tr>
         </tbody>

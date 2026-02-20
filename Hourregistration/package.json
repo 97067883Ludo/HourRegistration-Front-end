@@ -23,9 +23,9 @@
     "vuetify": "^3.11.4"
   },
   "devDependencies": {
-    "electron-builder": "^26.0.12",
     "@vitejs/plugin-vue": "^6.0.2",
     "electron": "^39.2.7",
+    "electron-builder": "^22.14.13",
     "vite": "^7.2.4",
     "vite-plugin-vue-devtools": "^8.0.5"
   }

@@ -1,22 +1,28 @@
 ﻿import {app, BrowserWindow, Tray, Menu} from 'electron'
 import {Notification} from 'electron'
 import {nativeImage} from 'electron/common'
-import { join } from 'path'
+import * as path from "node:path";
+import {fileURLToPath} from "node:url";
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+import { dirname, join } from 'path';
 
 const createWindow = () => {
     const win = new BrowserWindow({
         width: 800,
         height: 700,
     });
-
-    win.loadFile(join(__dirname, 'index.html'))
+    
+    console.log("Production/Packaged mode")
+    console.log(__dirname)
+    // Production/Packaged mode (loading from the file system)
+    win.loadFile(path.join(__dirname, '/dist/index.html'));
 }
 
 const red = nativeImage.createFromDataURL('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAACTSURBVHgBpZKBCYAgEEV/TeAIjuIIbdQIuUGt0CS1gW1iZ2jIVaTnhw+Cvs8/OYDJA4Y8kR3ZR2/kmazxJbpUEfQ/Dm/UG7wVwHkjlQdMFfDdJMFaACebnjJGyDWgcnZu1/lrCrl6NCoEHJBrDwEr5NrT6ko/UV8xdLAC2N49mlc5CylpYh8wCwqrvbBGLoKGvz8Bfq0QPWEUo/EAAAAASUVORK5CYII=')
 
 app.whenReady().then(() => {
     createWindow()
-
     app.on('window-all-closed', () => {
         if (process.platform !== 'darwin') {
             new Notification({
@@ -37,4 +43,3 @@ app.whenReady().then(() => {
         }
     })
 })
-

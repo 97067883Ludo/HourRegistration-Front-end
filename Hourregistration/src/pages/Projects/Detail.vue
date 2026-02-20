@@ -18,7 +18,7 @@
       result.data.hours[i].weekno = getISOWeekNumber(result.data.hours[i].endTime)
     }
     project.value = result.data.hours
-    console.log(project.value)
+    console.log(project)
   }
 
   onMounted(async () => {

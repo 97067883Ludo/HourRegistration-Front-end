@@ -176,7 +176,9 @@ function caclualteTotalTime(items) {
         <template v-slot:item.subTotal="{ internalItem, isExpanded, toggleExpand }">
           {{ getSubTotal(internalItem.columns.startTime, internalItem.columns.endTime) }}
         </template>
-
+        <template v-slot:group-summary="">
+        sdfsdf</template>
+        
 <!--        <tbody>-->
 <!--        <tr-->
 <!--            v-for="item in registrations"-->

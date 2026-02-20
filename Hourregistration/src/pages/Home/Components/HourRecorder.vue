@@ -1,4 +1,4 @@
-<script setup>
+`<script setup>
 import {computed, onMounted, ref} from "vue";
 import {storeToRefs} from 'pinia';
 import {useProjectState} from "@/state/ProjectState.js";
@@ -89,35 +89,61 @@ function getDisplayTime(time) {
   return datetime.toLocaleTimeString([], {hour: '2-digit', minute: '2-digit', hour12: false});
 }
 
+function SaveManually() {
+  SaveRecording();
+  clearFields();
+}
+
 //TODO: Disabled van save knop computed van maken.
 </script>
 
 <template>
-  <v-autocomplete
-      :loading="LoadingProjects"
-      :disabled="LoadingProjects || Running"
-      clearable
-      variant="outlined"
-      label="Selecteer project"
-      :items="projects.map(project => project.name)"
-      v-model="ProjectName"
-      @update:modelValue="ProjectNameChanged"
-  ></v-autocomplete>
+  <div style="display:flex; align-items: center; height: 100%;">
+    <v-autocomplete
+        :loading="LoadingProjects"
+        :disabled="LoadingProjects || Running"
+        clearable
+        variant="outlined"
+        label="Selecteer project"
+        :items="projects.map(project => project.name)"
+        v-model="ProjectName"
+        @update:modelValue="ProjectNameChanged"
+    ></v-autocomplete>
+    
+    <TimePicker
+        @update-time="Time => SaveStartTime(Time)" 
+        :Disabled="ProjectName === null || ProjectName === undefined || Running" 
+        Label="Start tijd" 
+        :Value="getDisplayTime(StartTime)"
+    ></TimePicker>
   
-  <TimePicker @update-time="Time => SaveStartTime(Time)" :Disabled="ProjectName === null || ProjectName === undefined || Running" Label="Start tijd" :Value="getDisplayTime(StartTime)"></TimePicker>
-
-  <TimePicker @update-time="time => SaveEndTime(time)" :Disabled="ProjectName === null || ProjectName === undefined || Running" Label="Eind tijd" :Value="getDisplayTime(EndTime)"></TimePicker>
+    <TimePicker
+        @update-time="time => SaveEndTime(time)" 
+        :Disabled="ProjectName === null || ProjectName === undefined || Running" 
+        Label="Eind tijd" 
+        :Value="getDisplayTime(EndTime)"
+    ></TimePicker>
+    
+    <v-btn 
+        v-if="StartAndEndTimeAreFilled || Running" 
+        @click="Record" :disabled="ProjectName === null || ProjectName === undefined" 
+        color="primary" 
+        style="margin-left: 10px;"
+    >
+      <span >{{Running ? "Stop": "Start"}}</span>
+    </v-btn>
   
-  <v-btn v-if="StartAndEndTimeAreFilled || Running" @click="Record" :disabled="ProjectName === null || ProjectName === undefined" color="primary" style="margin-left: 10px">
-    <span >{{Running ? "Stop": "Start"}}</span>
-  </v-btn>
-
-  <v-btn v-if="!StartAndEndTimeAreFilled && !Running" @click="" :disabled="ProjectName === null || ProjectName === undefined || StartTime === '' || EndTime === ''" color="primary" style="margin-left: 10px">
-    <span>Save</span>
-  </v-btn>
-  
+    <v-btn 
+        v-if="!StartAndEndTimeAreFilled && !Running" 
+        @click="SaveManually" 
+        :disabled="ProjectName === null || ProjectName === undefined || StartTime === '' || EndTime === ''" 
+        color="primary"
+    >
+      <span>Save</span>
+    </v-btn>
+  </div>
 </template>
 
 <style scoped>
 
-</style>
+</style>`

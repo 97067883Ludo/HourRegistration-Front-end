@@ -74,7 +74,7 @@
 </script>
 
 <template>
-  <v-card :title="hourRegistration.getProjectNameById(props.registration.ProjectId)" style="margin: 1%">
+  <v-card :title="hourRegistration.getProjectNameById(props.registration.ProjectId)" >
     <v-card-text>
       <div>
         {{CleanTime(props.registration.StartTime)}} tot
