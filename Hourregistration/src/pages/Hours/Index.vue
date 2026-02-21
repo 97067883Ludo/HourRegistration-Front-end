@@ -1,8 +1,9 @@
 <script setup>
 
 import {onMounted, ref} from "vue";
-  import {useHourRegistrationStore} from "@/state/HourRegistrationState.js";
+import {useHourRegistrationStore} from "@/state/HourRegistrationState.js";
 import {useUserStore} from "@/state/UserState.js";
+import IsUserSure from "@/pages/GobalComponents/IsUserSure.vue";
 
   const headers = [
     { key: 'data-table-group', title: 'week' },
@@ -11,6 +12,7 @@ import {useUserStore} from "@/state/UserState.js";
     { title: 'Start tijd', key: 'startTime' },
     { title: 'Eind tijd', key: 'endTime' },
     { title: 'subtotaal', key: 'subTotal' },
+    { title: '', key: 'actions' },
   ]
 
   const groupBy = ref([{ key: 'weekno', order: 'asc' }, { key: 'status', order: 'asc' }])
@@ -112,8 +114,14 @@ function caclualteTotalTime(items) {
   return hours + ":" + minutes;
 }
 
-</script>
+async function Delete(item) {
+  await hourStore.DeleteHourRegistrations(item.raw.id);
+  console.log(item.raw);
+  await LoadHourData();
+}
 
+</script>
+x
 <template>
   <div style="width:100%; display: flex; justify-content: center;">
     <div style="width: 80%;">
@@ -176,8 +184,20 @@ function caclualteTotalTime(items) {
         <template v-slot:item.subTotal="{ internalItem, isExpanded, toggleExpand }">
           {{ getSubTotal(internalItem.columns.startTime, internalItem.columns.endTime) }}
         </template>
+
+        <template v-slot:item.actions="{ internalItem, isExpanded, toggleExpand }">
+          <v-btn icon="mdi-pencil" variant="text"></v-btn>
+            <IsUserSure
+                @onDeleteConfirm="Delete(internalItem)"
+                icon="mdi-delete" 
+                color="red" 
+                buttonVariant="text" 
+                cardTitle="verwijderen" 
+                cardText="weet je zeker dat je dit item wilt verwijderen"
+            ></IsUserSure>
+        </template>
         <template v-slot:group-summary="">
-        sdfsdf</template>
+        hallo</template>
         
 <!--        <tbody>-->
 <!--        <tr-->

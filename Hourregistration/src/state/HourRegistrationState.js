@@ -16,6 +16,30 @@ export const useHourRegistrationStore = defineStore('HourRegistrationStore', {
         storage: localStorage, // Optional: Use sessionStorage instead of localStorage
     },
     actions: {
+        async DeleteHourRegistrations(Id) {
+            try {
+                const res = await fetchWithBaseUrl(`api/hour/${Id}`, {
+                    method: "DELETE",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                        id: Id
+                    })
+                }).then(res => {
+                    return {
+                        success: true,
+                        status: 200,
+                        data: res.json()
+                    }
+                });
+            } catch (error) {
+                return {
+                    success: false,
+                    status: error.status,
+                }
+            }
+        },
         async CreateHourRegistration(itemIndex) {
             try {
                 const response = await fetchWithBaseUrl("api/hour", {
