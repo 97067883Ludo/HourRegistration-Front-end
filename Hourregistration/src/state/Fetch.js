@@ -1,5 +1,5 @@
 // --- Configuration ---
-const BASE_URL = 'http://localhost:5145/';
+const BASE_URL = import.meta.env.VITE_API_URL;
 
 /**
  * A wrapper around the native fetch API that automatically prepends
@@ -10,6 +10,7 @@ const BASE_URL = 'http://localhost:5145/';
  * @returns {Promise<Response>} The native Response object from fetch.
  */
 export function fetchWithBaseUrl(endpoint, options = {}) {
+
     // 1. Construct the full URL
     // Ensure the endpoint starts with a slash if needed, but combining 
     // BASE_URL + endpoint works well if BASE_URL doesn't end in a slash.
