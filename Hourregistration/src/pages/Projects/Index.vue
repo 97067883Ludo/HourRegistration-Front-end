@@ -153,8 +153,11 @@ onMounted(async () => {
                 cardTitle="verwijderen"
                 cardText="weet je zeker dat je dit item wilt verwijderen"
             ></IsUserSure>
-            
-            
+            <v-btn
+              variant="text"
+              icon="mdi-clock-plus-outline"
+              @click="(event) => { event.stopPropagation() }"
+            ></v-btn>
           </td>
         </tr>
         </tbody>
