@@ -106,7 +106,7 @@
               Anuleren
             </v-btn>
 
-            <v-btn @click="() => {DeleteItem(props.index); DeleteDialog = false}">
+            <v-btn @click="() => {DeleteItem(props.index); DeleteDialog = false}" color="red">
               Verwijderen
             </v-btn>
           </template>
