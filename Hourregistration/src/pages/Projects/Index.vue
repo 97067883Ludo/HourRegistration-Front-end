@@ -61,6 +61,7 @@ async function CreateProject() {
 }
 
 async function updateProject(project) {
+  console.log(project)
   const result = await projectState.UpdateProject(project);
   if(result.success) {
     await LoadProjects();

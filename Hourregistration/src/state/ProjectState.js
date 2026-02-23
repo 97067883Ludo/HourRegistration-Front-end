@@ -97,15 +97,17 @@ export const useProjectState =  defineStore('ProjectStore', {
         },
         
         async UpdateProject(project) {
+            console.log(project)
             try {
-                return await fetchWithBaseUrl("api/project/" + project.id, {
+                return await fetchWithBaseUrl("api/project", {
                     method: "PUT",
                     headers: {
                         "Content-Type": "application/json",
                     },
                     body: JSON.stringify({
-                        Name: project.Name,
-                        Description: project.Description
+                        Id: project.id,
+                        Name: project.name,
+                        Description: project.description
                     })
                 }).then((response) => {
                     return {

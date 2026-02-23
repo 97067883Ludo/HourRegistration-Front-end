@@ -39,7 +39,7 @@ const description = ref(props.project.description)
           
           <v-btn
               text="Opslaan"
-              @click="() => { isActive.value = false; $emit('update', {name: name.value, description: description.value, id: props.project.id}) }"
+              @click="() => { isActive.value = false; $emit('update', {name: name, description: description, id: props.project.id}) }"
           ></v-btn>
         </v-card-actions>
       </v-card>
