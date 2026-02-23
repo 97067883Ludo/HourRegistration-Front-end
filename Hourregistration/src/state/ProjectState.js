@@ -72,6 +72,7 @@ export const useProjectState =  defineStore('ProjectStore', {
                 }
             }
         },
+        
         async DeleteProject(id) {
             try {
                 return await fetchWithBaseUrl("api/project/" + id, {
@@ -86,6 +87,35 @@ export const useProjectState =  defineStore('ProjectStore', {
                         status: response.status
                     }
                 });
+            } catch (error) {
+                return {
+                    success: false,
+                    data: [],
+                    code: error.code
+                }
+            }
+        },
+        
+        async UpdateProject(project) {
+            console.log(project)
+            try {
+                return await fetchWithBaseUrl("api/project", {
+                    method: "PUT",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                        Id: project.id,
+                        Name: project.name,
+                        Description: project.description
+                    })
+                }).then((response) => {
+                    return {
+                        success: true,
+                        data:  response.json(),
+                        status: response.status
+                    }
+                })
             } catch (error) {
                 return {
                     success: false,

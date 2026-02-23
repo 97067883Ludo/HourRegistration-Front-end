@@ -2,6 +2,8 @@
 import {useProjectState} from "@/state/ProjectState.js";
 import {onMounted, ref} from "vue";
 import router from "@/router/index.js";
+import IsUserSure from "@/pages/GobalComponents/IsUserSure.vue";
+import EditProject from "@/pages/Projects/Components/EditProject.vue";
 
 const projectState = useProjectState();
 
@@ -56,6 +58,14 @@ async function CreateProject() {
   }
   creatingProject.value = false;
   await LoadProjects();
+}
+
+async function updateProject(project) {
+  console.log(project)
+  const result = await projectState.UpdateProject(project);
+  if(result.success) {
+    await LoadProjects();
+  }
 }
 
 function clickedRow(projectId) {
@@ -132,7 +142,19 @@ onMounted(async () => {
           <td>{{ item.name }}</td>
           <td>{{ item.description }}</td>
           <td>
-            <v-btn @click=" (event) => {DeleteProject(item.id); event.stopPropagation();}">Delete</v-btn>
+            
+            <EditProject @update="(project) => {updateProject(project)}" :project="{name: item.name, description: item.description, id: item.id}" ></EditProject>
+            
+            <IsUserSure
+                @onDeleteConfirm="DeleteProject(item.id)"
+                icon="mdi-delete"
+                color="red"
+                buttonVariant="text"
+                cardTitle="verwijderen"
+                cardText="weet je zeker dat je dit item wilt verwijderen"
+            ></IsUserSure>
+            
+            
           </td>
         </tr>
         </tbody>
