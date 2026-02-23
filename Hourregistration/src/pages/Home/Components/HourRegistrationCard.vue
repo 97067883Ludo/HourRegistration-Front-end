@@ -72,7 +72,7 @@
 </script>
 
 <template>
-  <v-card :title="hourRegistration.getProjectNameById(props.registration.ProjectId)" >
+  <v-card :title="props.registration.ProjectName" >
     <v-card-text>
       <div>
         {{ CleanTime(props.registration.StartTime) }} tot
