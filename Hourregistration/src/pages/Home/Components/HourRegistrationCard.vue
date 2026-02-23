@@ -15,6 +15,7 @@
 
   import { defineProps } from 'vue';
   import TimePicker from "@/pages/GobalComponents/TimePicker.vue";
+  import {DateToTimeOnly} from "@/globalfunctions.js";
   const props = defineProps({
     registration: {
       type: Object,
@@ -59,17 +60,14 @@
       toBeReturned = date.toLocaleDateString() + " "
     }
     
-    toBeReturned += date.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})
+    toBeReturned += DateToTimeOnly(time)
     
     return toBeReturned;
   }
   
   onMounted(() => {
-    console.log(props.registration)
-    let StartTime = new Date(props.registration.StartTime)
-    let EndTime = new Date(props.registration.EndTime)
-    startTime.value = StartTime.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
-    endTime.value = EndTime.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+    startTime.value = DateToTimeOnly(props.registration.StartTime);
+    endTime.value = DateToTimeOnly(props.registration.EndTime)
   })
 </script>
 
@@ -77,7 +75,7 @@
   <v-card :title="hourRegistration.getProjectNameById(props.registration.ProjectId)" >
     <v-card-text>
       <div>
-        {{CleanTime(props.registration.StartTime)}} tot
+        {{ CleanTime(props.registration.StartTime) }} tot
       </div>
       <div>
         {{CleanTime(props.registration.EndTime)}}
