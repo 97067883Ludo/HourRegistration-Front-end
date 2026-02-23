@@ -45,6 +45,7 @@ const handleLogin = async () => {
       max-width="448"
       rounded="lg"
     >
+      <form>
       <v-img
           class="mx-auto my-6"
           max-width="228"
@@ -88,16 +89,18 @@ const handleLogin = async () => {
       >
       </v-card>
       <div style="width: 100%; text-align: right">
-      <v-btn
+      <v-btn type="submit"
+             id="login-button"
         class="mb-8"
         color="green"
         size="large"
         variant="tonal"
         :loading="loginButtonState"
-        @click="() => {handleLogin()}">
+        @click="(event) => {event.preventDefault(); handleLogin()}">
         Log In
       </v-btn>
       </div>
+      </form>
     </v-card>
   </div>
 </template>
