@@ -4,6 +4,7 @@ import {onMounted, ref} from "vue";
 import {useHourRegistrationStore} from "@/state/HourRegistrationState.js";
 import {useUserStore} from "@/state/UserState.js";
 import IsUserSure from "@/pages/GobalComponents/IsUserSure.vue";
+import EditHourRegistration from "@/pages/Hours/Components/EditHourRegistration.vue";
 
   const headers = [
     { key: 'data-table-group', title: 'week' },
@@ -186,7 +187,9 @@ x
         </template>
 
         <template v-slot:item.actions="{ internalItem, isExpanded, toggleExpand }">
-          <v-btn icon="mdi-pencil" variant="text"></v-btn>
+          
+          <EditHourRegistration :hourRegistration="internalItem.raw"></EditHourRegistration>
+          
             <IsUserSure
                 @onDeleteConfirm="Delete(internalItem)"
                 icon="mdi-delete" 
@@ -195,7 +198,9 @@ x
                 cardTitle="verwijderen" 
                 cardText="weet je zeker dat je dit item wilt verwijderen"
             ></IsUserSure>
+          
         </template>
+        
         <template v-slot:group-summary="">
         hallo</template>
         
