@@ -4,6 +4,7 @@ import {onMounted, ref} from "vue";
 import {useHourRegistrationStore} from "@/state/HourRegistrationState.js";
 import {useUserStore} from "@/state/UserState.js";
 import IsUserSure from "@/pages/GobalComponents/IsUserSure.vue";
+import EditHourRegistration from "@/pages/Hours/Components/EditHourRegistration.vue";
 
   const headers = [
     { key: 'data-table-group', title: 'week' },
@@ -46,14 +47,12 @@ async function LoadUsers() {
   loadingUsers.value = false;
 }
 
-async function LoadHourData () {
+async function LoadHourData() {
   loadingData.value = true;
   let result = await hourStore.GetHourRegistrationDetails();
   result.data.then((data) => {
     for(let i =0; i<data.length; i++)
       data[i].weekno = getISOWeekNumber(data[i].startTime);
-    console.log(data);
-
     registrations.value = data;
   });
   loadingData.value = false;
@@ -186,7 +185,9 @@ x
         </template>
 
         <template v-slot:item.actions="{ internalItem, isExpanded, toggleExpand }">
-          <v-btn icon="mdi-pencil" variant="text"></v-btn>
+          
+          <EditHourRegistration @itemChanged="LoadHourData" :hourRegistration="internalItem.raw"></EditHourRegistration>
+          
             <IsUserSure
                 @onDeleteConfirm="Delete(internalItem)"
                 icon="mdi-delete" 
@@ -195,7 +196,9 @@ x
                 cardTitle="verwijderen" 
                 cardText="weet je zeker dat je dit item wilt verwijderen"
             ></IsUserSure>
+          
         </template>
+        
         <template v-slot:group-summary="">
         hallo</template>
         

@@ -65,6 +65,28 @@ export const useHourRegistrationStore = defineStore('HourRegistrationStore', {
                 }
             }
         },
+        async UpdateHourRegistration(item) {
+            try {
+                const response = await fetchWithBaseUrl(`api/hour`, {
+                    method: "PUT",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify(item)
+                }).then(res => {
+                    return {
+                        success: true,
+                        status: 200,
+                        data: res.json()
+                    }
+                })
+            } catch (error) {
+                return {
+                    success: false,
+                    status: error.status,
+                }
+            }
+        },
         getProjectByName(name) {
             console.log(this.projects)
             return this.projects.find(project => project.name === name)
