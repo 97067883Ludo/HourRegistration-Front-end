@@ -47,14 +47,12 @@ async function LoadUsers() {
   loadingUsers.value = false;
 }
 
-async function LoadHourData () {
+async function LoadHourData() {
   loadingData.value = true;
   let result = await hourStore.GetHourRegistrationDetails();
   result.data.then((data) => {
     for(let i =0; i<data.length; i++)
       data[i].weekno = getISOWeekNumber(data[i].startTime);
-    console.log(data);
-
     registrations.value = data;
   });
   loadingData.value = false;
@@ -188,7 +186,7 @@ x
 
         <template v-slot:item.actions="{ internalItem, isExpanded, toggleExpand }">
           
-          <EditHourRegistration :hourRegistration="internalItem.raw"></EditHourRegistration>
+          <EditHourRegistration @itemChanged="LoadHourData" :hourRegistration="internalItem.raw"></EditHourRegistration>
           
             <IsUserSure
                 @onDeleteConfirm="Delete(internalItem)"
