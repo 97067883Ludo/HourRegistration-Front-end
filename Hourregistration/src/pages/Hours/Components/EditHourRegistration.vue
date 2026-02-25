@@ -45,6 +45,21 @@ function GetIsoTime(dateTime) {
   return date.toISOString();
 }
 
+function SetNewStartTime(newTime) {
+  startTime.value = SetNewTime(newTime);
+}
+
+function SetNewEndTime(newTime) {
+  endTime.value = SetNewTime(newTime);
+}
+
+function SetNewTime(timeString) {
+  let dateTime = new Date(date.value);
+  dateTime.setHours(timeString.split(":")[0], timeString.split(":")[1], 0, 0);
+  return dateTime;
+}
+
+
 </script>
 
 <template>
@@ -61,9 +76,9 @@ function GetIsoTime(dateTime) {
           <h4>Datum</h4>
           <DatePicker @update:date="(newdate) => {date = newdate}" :date="date"></DatePicker>
           <h4>Start tijd</h4>
-          <TimePicker :Value="DateToTimeOnly(startTime)"></TimePicker>
+          <TimePicker @updateTime="(newtime) => {SetNewStartTime(newtime)}" :Value="DateToTimeOnly(startTime)"></TimePicker>
           <h4>End tijd</h4>
-          <TimePicker :Value="DateToTimeOnly(endTime)"></TimePicker>
+          <TimePicker @updateTime="(newtime) => {SetNewEndTime(newtime)}" :Value="DateToTimeOnly(endTime)"></TimePicker>
         </v-card-text>
 
         <v-card-actions>
