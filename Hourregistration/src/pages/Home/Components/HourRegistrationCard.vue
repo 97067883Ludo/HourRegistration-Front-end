@@ -31,7 +31,7 @@
   
   async function SaveItem() {
     savingInProgress.value = true;
-    let result = await hourRegistration.CreateHourRegistration(props.index);
+    let result = await hourRegistration.SaveRecordedItem(props.index);
     if (result.status === 200) {
       hourRegistration.DeleteItem(props.index);
       savingInProgress.value = false;

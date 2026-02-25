@@ -4,6 +4,7 @@ import {onMounted, ref} from "vue";
 import router from "@/router/index.js";
 import IsUserSure from "@/pages/GobalComponents/IsUserSure.vue";
 import EditProject from "@/pages/Projects/Components/EditProject.vue";
+import CreateHourRegistration from "@/pages/Projects/Components/CreateHourRegistration.vue";
 
 const projectState = useProjectState();
 
@@ -153,11 +154,7 @@ onMounted(async () => {
                 cardTitle="verwijderen"
                 cardText="weet je zeker dat je dit item wilt verwijderen"
             ></IsUserSure>
-            <v-btn
-              variant="text"
-              icon="mdi-clock-plus-outline"
-              @click="(event) => { event.stopPropagation() }"
-            ></v-btn>
+            <CreateHourRegistration :Project="item" cardTitle="Uren toevoegen"></CreateHourRegistration>
           </td>
         </tr>
         </tbody>

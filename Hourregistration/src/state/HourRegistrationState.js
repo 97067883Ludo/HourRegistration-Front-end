@@ -47,12 +47,7 @@ export const useHourRegistrationStore = defineStore('HourRegistrationStore', {
                     headers: {
                         "Content-Type": "application/json",
                     },
-                    body: JSON.stringify({
-                        ProjectId: this.RecordedItems[itemIndex].ProjectId,
-                        UserId: this.RecordedItems[itemIndex].UserId,
-                        StartTime: new Date(this.RecordedItems[itemIndex].StartTime).toISOString(),
-                        EndTime: new Date(this.RecordedItems[itemIndex].EndTime).toISOString()
-                    })
+                    body: JSON.stringify(itemIndex)
                 })
                 return {
                     response: response,
@@ -86,6 +81,14 @@ export const useHourRegistrationStore = defineStore('HourRegistrationStore', {
                     status: error.status,
                 }
             }
+        },
+        async SaveRecordedItem(itemIndex) {
+            return await this.CreateHourRegistration({
+                ProjectId: this.RecordedItems[itemIndex].ProjectId,
+                UserId: this.RecordedItems[itemIndex].UserId,
+                StartTime: new Date(this.RecordedItems[itemIndex].StartTime).toISOString(),
+                EndTime: new Date(this.RecordedItems[itemIndex].EndTime).toISOString()
+            })
         },
         getProjectByName(name) {
             console.log(this.projects)
