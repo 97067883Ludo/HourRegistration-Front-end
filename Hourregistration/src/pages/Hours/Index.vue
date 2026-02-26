@@ -17,8 +17,8 @@ import EditHourRegistration from "@/pages/Hours/Components/EditHourRegistration.
   ]
 
   const groupBy = ref([
-      { key: 'weekno', order: 'asc' },
-      { key: 'dayLabel', order: 'dec' }])
+      { key: 'weekno' },
+      { key: 'dayLabel', order: 'desc' }])
 
   const registrations = ref([]);
   const loadingData = ref(false)
@@ -53,7 +53,6 @@ function getDayLabel(startTime) {
   let date = new Date(startTime);
   let day = date.getDay();
   let dayLabels = ["Zondag", "Maandag", "Dinsdag", "Woensdag", "Donderdag", "Vrijdag", "Zaterdag"];
-  console.log(day);
   return dayLabels[day];
 }
 
@@ -165,7 +164,8 @@ x
       </div>
       
       <v-data-table
-          :items="registrations"  
+          :sortBy="[{ key: 'startTime', order: 'desc' }]"
+          :items="registrations"
           :loading="loadingData"
           :group-by="groupBy"
           :headers="headers"
