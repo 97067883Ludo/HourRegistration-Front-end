@@ -16,7 +16,9 @@ import EditHourRegistration from "@/pages/Hours/Components/EditHourRegistration.
     { title: '', key: 'actions' },
   ]
 
-  const groupBy = ref([{ key: 'weekno', order: 'asc' }, { key: 'status', order: 'asc' }])
+  const groupBy = ref([
+      { key: 'weekno', order: 'asc' },
+      { key: 'dayLabel', order: 'dec' }])
 
   const registrations = ref([]);
   const loadingData = ref(false)
@@ -47,12 +49,22 @@ async function LoadUsers() {
   loadingUsers.value = false;
 }
 
-async function LoadHourData() {
+function getDayLabel(startTime) {
+  let date = new Date(startTime);
+  let day = date.getDay();
+  let dayLabels = ["Zondag", "Maandag", "Dinsdag", "Woensdag", "Donderdag", "Vrijdag", "Zaterdag"];
+  console.log(day);
+  return dayLabels[day];
+}
+
+async function LoadHourData () {
   loadingData.value = true;
   let result = await hourStore.GetHourRegistrationDetails();
   result.data.then((data) => {
-    for(let i =0; i<data.length; i++)
+    for(let i =0; i<data.length; i++){
       data[i].weekno = getISOWeekNumber(data[i].startTime);
+      data[i].dayLabel = getDayLabel(data[i].startTime);
+    }
     registrations.value = data;
   });
   loadingData.value = false;
@@ -89,7 +101,7 @@ async function LoadHourData() {
     // Convert minutes to a string and pad with a leading zero if < 10
     let paddedMinutes = String(minutes).padStart(2, '0');
   
-    return hours + ":" + paddedMinutes;
+    return String(hours).padStart(2, '0') + ":" + paddedMinutes;
   }
 
 function getISOWeekNumber(dateString) {
@@ -102,7 +114,7 @@ function getISOWeekNumber(dateString) {
   return weekNo;
 }
 
-function caclualteTotalTime(items) {
+function CaclualteTotalTime(items) {
   let totalTime = 0;
   
   for (let i =0; i < items.length; i++) {
@@ -110,7 +122,20 @@ function caclualteTotalTime(items) {
   }
   const hours = Math.floor(totalTime / (1000 * 60 * 60));
   let minutes = Math.floor((totalTime % (1000 * 60 * 60)) / (1000 * 60));
-  return hours + ":" + minutes;
+  return String(hours).padStart(2, '0') + ":" + String(minutes).padStart(2, '0');
+}
+
+function CalculateWeekTotalTime(items) {
+  console.log(items.items)
+  let totalTime = 0;
+  for(let i = 0; i < items.items.length; i++) {
+    for(let j = 0; j < items.items[i].items.length; j++) {
+      totalTime += (new Date(items.items[i].items[j].columns.endTime) - new Date(items.items[i].items[j].columns.startTime));
+    }
+  }
+  const hours = Math.floor(totalTime / (1000 * 60 * 60));
+  let minutes = Math.floor((totalTime % (1000 * 60 * 60)) / (1000 * 60));
+  return String(hours).padStart(2, '0') + ":" + String(minutes).padStart(2, '0');
 }
 
 async function Delete(item) {
@@ -145,33 +170,6 @@ x
           :group-by="groupBy"
           :headers="headers"
       >
-        <!-- i dont know why this is required but if i dont this shity thing is going broken... -->
-        <template v-slot:group-header="{ item, columns, toggleGroup, isGroupOpen }">
-          <tr>
-            <td
-                :colspan="columns.length"
-                class="cursor-pointer"
-                v-ripple
-                @click="toggleGroup(item)"
-            >
-              <div class="d-flex align-center" style="justify-content: space-between">
-                <div>
-                <v-btn
-                    :icon="isGroupOpen(item) ? '$expand' : '$next'"
-                    color="medium-emphasis"
-                    density="comfortable"
-                    size="small"
-                    variant="outlined"
-                ></v-btn>
-
-                <span class="ms-4">{{ item.value }}</span>
-                </div>
-                  <span>Totaal: {{caclualteTotalTime(item.items[0].items)}}</span>
-              </div>
-            </td>
-          </tr>
-        </template>
-          
         <template v-slot:item.endTime="{ internalItem, isExpanded, toggleExpand }">
           {{ getCleanDateTimeString(internalItem.columns.endTime) }}
         </template>
@@ -185,10 +183,9 @@ x
         </template>
 
         <template v-slot:item.actions="{ internalItem, isExpanded, toggleExpand }">
-          
           <EditHourRegistration @itemChanged="LoadHourData" :hourRegistration="internalItem.raw"></EditHourRegistration>
           
-            <IsUserSure
+          <IsUserSure
                 @onDeleteConfirm="Delete(internalItem)"
                 icon="mdi-delete" 
                 color="red" 
@@ -199,8 +196,21 @@ x
           
         </template>
         
-        <template v-slot:group-summary="">
-        hallo</template>
+        <template v-slot:group-summary="{ item }">
+          
+          <div v-if="item.key === 'weekno'" >
+            Totaal week: 
+            {{CalculateWeekTotalTime(item)}}
+            
+          </div>
+          
+          <div v-if="item.key !== 'weekno'" style="display: flex; justify-content: flex-end;">
+            Totaal dag: 
+            {{CaclualteTotalTime(item.items)}}
+        
+          </div>
+          
+        </template>
         
 <!--        <tbody>-->
 <!--        <tr-->
