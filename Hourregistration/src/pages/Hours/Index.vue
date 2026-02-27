@@ -56,7 +56,7 @@ function getDayLabel(startTime) {
   let month = pad(date.getMonth() + 1); // 0-indexed, so add 1
   let daydate = pad(date.getDate());
   let dayLabels = ["Zondag", "Maandag", "Dinsdag", "Woensdag", "Donderdag", "Vrijdag", "Zaterdag"];
-  return daydate + "-" + month + "-" + year + " " + dayLabels[day];
+  return dayLabels[day]+ " " + daydate + "-" + month + "-" + year;
 }
 
 async function LoadHourData () {
