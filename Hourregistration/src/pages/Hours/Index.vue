@@ -5,6 +5,7 @@ import {useHourRegistrationStore} from "@/state/HourRegistrationState.js";
 import {useUserStore} from "@/state/UserState.js";
 import IsUserSure from "@/pages/GobalComponents/IsUserSure.vue";
 import EditHourRegistration from "@/pages/Hours/Components/EditHourRegistration.vue";
+import CreateHourRegistration from "@/pages/Hours/Components/CreateHourRegistration.vue";
 
   const headers = [
     { key: 'data-table-group', title: 'week' },
@@ -208,10 +209,12 @@ x
             
           </div>
           
-          <div v-if="item.key !== 'weekno'" style="display: flex; justify-content: flex-end;">
+          <div v-if="item.key !== 'weekno'" style="display: flex; justify-content: flex-end; align-items: center">
             Totaal dag: 
             {{CaclualteTotalTime(item.items)}}
-        
+            <div>
+              <CreateHourRegistration :date="item.items[0].columns.startTime" @itemCreated="async () => {await LoadHourData();}"></CreateHourRegistration>
+            </div>
           </div>
           
         </template>
