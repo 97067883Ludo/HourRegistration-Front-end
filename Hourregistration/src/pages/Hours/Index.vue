@@ -18,7 +18,7 @@ import EditHourRegistration from "@/pages/Hours/Components/EditHourRegistration.
 
   const groupBy = ref([
       { key: 'weekno' },
-      { key: 'dayLabel', order: 'desc' }])
+      { key: 'dayLabel'}])
 
   const registrations = ref([]);
   const loadingData = ref(false)
@@ -52,14 +52,18 @@ async function LoadUsers() {
 function getDayLabel(startTime) {
   let date = new Date(startTime);
   let day = date.getDay();
+  let year = date.getFullYear();
+  let month = pad(date.getMonth() + 1); // 0-indexed, so add 1
+  let daydate = pad(date.getDate());
   let dayLabels = ["Zondag", "Maandag", "Dinsdag", "Woensdag", "Donderdag", "Vrijdag", "Zaterdag"];
-  return dayLabels[day];
+  return daydate + "-" + month + "-" + year + " " + dayLabels[day];
 }
 
 async function LoadHourData () {
   loadingData.value = true;
   let result = await hourStore.GetHourRegistrationDetails();
   result.data.then((data) => {
+    data = data.sort((a) => {return new Date(a.startTime)})
     for(let i =0; i<data.length; i++){
       data[i].weekno = getISOWeekNumber(data[i].startTime);
       data[i].dayLabel = getDayLabel(data[i].startTime);
@@ -78,9 +82,9 @@ async function LoadHourData () {
     let hours = date.getHours();
     let minutes = date.getMinutes();
   
-    let toBeReturned = year
+    let toBeReturned = pad(day)
         + "-" + pad(month)
-        + "-" + pad(day)
+        + "-" + year
         + " " + pad(hours)
         + ":" + pad(minutes);
   
@@ -164,7 +168,7 @@ x
       </div>
       
       <v-data-table
-          :sortBy="[{ key: 'startTime', order: 'desc' }]"
+          :sortBy="[{ key: 'startTime'}]"
           :items="registrations"
           :loading="loadingData"
           :group-by="groupBy"
